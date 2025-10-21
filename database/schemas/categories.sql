@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS categories (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL UNIQUE,
+    color TEXT DEFAULT '#3B82F6',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE todos ADD COLUMN category_id INTEGER REFERENCES categories(id);
+CREATE INDEX idx_todos_category ON todos(category_id);
