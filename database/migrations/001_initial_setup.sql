@@ -1,19 +1,7 @@
 -- Migration: Initial database setup
 -- Created: 2024-01-01
 
--- Create todos table
-CREATE TABLE IF NOT EXISTS todos (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    description TEXT,
-    completed BOOLEAN DEFAULT 0,
-    priority INTEGER DEFAULT 1 CHECK (priority IN (1, 2, 3)),
-    due_date DATETIME,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
--- Create categories table
+-- Create categories table first
 CREATE TABLE IF NOT EXISTS categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL UNIQUE,
@@ -21,8 +9,18 @@ CREATE TABLE IF NOT EXISTS categories (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- Add category relationship to todos
-ALTER TABLE todos ADD COLUMN category_id INTEGER REFERENCES categories(id);
+-- Create todos table with category_id included
+CREATE TABLE IF NOT EXISTS todos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    description TEXT,
+    completed BOOLEAN DEFAULT 0,
+    priority INTEGER DEFAULT 1 CHECK (priority IN (1, 2, 3)),
+    category_id INTEGER REFERENCES categories(id),
+    due_date DATETIME,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 
 -- Create indexes
 CREATE INDEX IF NOT EXISTS idx_todos_completed ON todos(completed);
